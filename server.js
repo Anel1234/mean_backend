@@ -46,9 +46,9 @@ app.use(express.static(__dirname + '/public'));
 
 app.use('/api', route);
 
-
-
-
+app.use(function(req, res) {
+    res.status(404).send({url: req.originalUrl + ' not found'})
+});
 
 // require('./routes/route')(app);
 

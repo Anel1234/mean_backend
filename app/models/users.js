@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
     userName: String,
-    versionKey: false
+    versionKey: false,
+    images: [{ data: Buffer, contentType: String }]
 });
 
 //var userModel = mongoose.model('User', userSchema);

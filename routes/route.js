@@ -35,20 +35,20 @@ router.get('/users', function(req, res) {
             });
         });
 
-router.get('/notifications', function(req, res){
-    Notifications.find(function(err, users){
-        if(err){
-            res.send(err);
-        }
-        else{
-            res.json(users);
-        }
-    })
-})
+// router.get('/notifications', function(req, res){
+//     Notifications.find(function(err, users){
+//         if(err){
+//             res.send(err);
+//         }
+//         else{
+//             res.json(users);
+//         }
+//     })
+// })
 
 router.post('/user', (req, res)=>{
     let newUser = new Users({
-        "userName": req.body.hello
+        "userName": req.body.userName
     });
     newUser.save((err, newUser)=>{
         if(err){
@@ -60,8 +60,66 @@ router.post('/user', (req, res)=>{
     })
 });
 
-router.patch('/notification/:id', (req, res)=>{
-    
+router.delete('/user/:id', (req, res, err) => {
+    let id = req.params.id;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+        // let user = Users.findById(id, function(err, obj) {
+        //     if (err) throw err;
+        //     return obj;
+        // });
+
+        // let user = function getuserName(id) {
+        //     var query = Users.findById(id);
+        //     return query;
+        // }
+
+        Users.findByIdAndRemove(id, function(err, obj) {
+            if (err) throw err;
+            if (!obj) {
+                res.send('Did not match a UserID in the database');
+            } else {
+                res.send('User ' + id + ' has been deleted from the database');
+            }
+        })
+    }
+    else throw "This is not a valid ID"
+})
+
+router.patch('/user/:id', (req, res, err) => {
+    let id = req.params.id;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+        Users.findByIdAndUpdate(id, {$set:{userName:req.userName}}, function(err, obj) {
+            if (obj) { 
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.send('User ' + id + ' has been updated')
+                }
+            }
+            else {
+                res.send('Did not match a UserID in the database')
+            }
+        })
+    }
+})
+
+router.patch('/image/:id', (req, res, err) => {
+    let id = req.params.id;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+        // Users.findByIdAndUpdate(id, {$push:{images:{ data: "nottest", contentType: "image/png" }}}, function(err, obj) {
+        Users.findByIdAndUpdate(id, {$push:{images: req.body.images}}, function(err, obj) {
+            if (obj) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.send('Image has been added')
+                }
+            }
+            else {
+                res.send ('Did not match a UserID in the database')
+            }
+        })
+    }
 })
 
 //  router.get('/users', (req, res, next)=>{
