@@ -8,11 +8,25 @@
 
 // });
 
-
+// var promise = require('bluebird');
+// var options = { promiseLib: promise };
+// var connectionString = "postgres://dba:Nottingham13@localhost:5432/testdb"
+// var pgp = require('pg-promise')(options);
+// var db = pgp(connectionString);
 var express = require('express');
 var router = express.Router();
 var Users = require('../app/models/users');
+var client = require('../server.js');
 var Notifications = require('../app/models/notifications');
+var db = require('../queries');
+
+const pg = require('pg')
+var connectionString = "postgres://dba:Nottingham13@localhost:5432/testdb"
+var client = new pg.Client(connectionString);
+client.connect();
+
+//var pgp = require('pg-promise')(options);
+//var db = pgp(connectionString);
 
 // router.get('*', (req, res)=>{
 //     res.sendfile('./public/views/index.html');
@@ -22,18 +36,23 @@ var Notifications = require('../app/models/notifications');
 //    res.send('routetested');
 // });
 
-router.get('/users', function(req, res) {
-            // use mongoose to get all users in the database
-            Users.find(function(err, users) {
-                if (err) {
-                    res.send(err);
-                }
-                else{
-                    res.json(users); // return all users in JSON format
-                }
+
+router.get('/users', db.getUsers);
+router.get('/notifications', db.getNotifications)
+
+
+// router.get('/users', function(req, res) {
+//             // use mongoose to get all users in the database
+//             Users.find(function(err, users) {
+//                 if (err) {
+//                     res.send(err);
+//                 }
+//                 else{
+//                     res.json(users); // return all users in JSON format
+//                 }
                 
-            });
-        });
+//             });
+//         });
 
 // router.get('/notifications', function(req, res){
 //     Notifications.find(function(err, users){
